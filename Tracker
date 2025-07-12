@@ -1,0 +1,37 @@
+# Install yfinance (if not already)
+
+import yfinance as yf 
+import pandas as pd
+
+
+tickers = ['AAPL', 'MSFT', 'GOOGL'] # Define stocks
+start_date = '2024-07-01' 
+end_date = '2025-07-01'
+
+
+summary = [] # Dictionary for store results
+
+
+for ticker in tickers: # Loop through each ticker
+    stock = yf.Ticker(ticker)
+    hist = stock.history(start=start_date, end=end_date)
+    
+    # Calculate key stats
+    avg_price = hist['Close'].mean()
+    max_price = hist['Close'].max()
+    min_price = hist['Close'].min()
+    pct_change = ((hist['Close'][-1] - hist['Close'][0]) / hist['Close'][0]) * 100
+    
+    summary.append({
+        'Ticker': ticker,
+        'Start Price': round(hist['Close'][0], 2),
+        'End Price': round(hist['Close'][-1], 2),
+        'Average Price': round(avg_price, 2),
+        'Max Price': round(max_price, 2),
+        'Min Price': round(min_price, 2),
+        '% Change': f"{pct_change:.2f}%"
+    })
+
+
+summary_df = pd.DataFrame(summary)
+print(summary_df) # Display
